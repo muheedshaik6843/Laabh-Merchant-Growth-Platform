@@ -1,7 +1,25 @@
 const state={merchant:null,dashboard:null,products:[],recommendations:[],page:'Overview',customers:[],segment:'All segments',chart:'daily',evaluation:null,offerProduct:null};
 const navItems=[['Overview','◫'],['AI Business Advisor','✦'],['Profit Guard','◈'],['Customers','♙'],['Sales Analytics','⌁'],['Inventory Insights','▦'],['Voice Assistant','◉'],['Campaign History','↗'],['Settings','⚙']];
 const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{maximumFractionDigits:0});
-async function api(path,opts={}){const r=await fetch('/api'+path,{headers:{'Content-Type':'application/json'},...opts});let d=await r.json();if(!r.ok)throw Error(d.error||'Something went wrong');return d}
+async function api(path, opts = {}) {
+    const r = await fetch(
+        'http://127.0.0.1:5000/api' + path,
+        {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            ...opts
+        }
+    );
+
+    let d = await r.json();
+
+    if (!r.ok) {
+        throw Error(d.error || 'Something went wrong');
+    }
+
+    return d;
+}
 function toast(s){const el=document.createElement('div');el.className='toast';el.textContent=s;document.body.append(el);setTimeout(()=>el.remove(),3000)}
 function renderLogin(register=false){document.getElementById('app').innerHTML=`<div style="min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 15% 20%,#fff2e7,transparent 38%),#f6f8fa"><form id="loginForm" class="card" style="width:min(420px,calc(100vw - 32px));padding:34px"><div class="brand" style="padding:0 0 24px"><div class="logo">ल</div><div class="brand-name">laabh<span>.</span></div></div><div class="eyebrow">MERCHANT GROWTH PLATFORM</div><h1 style="font:800 25px Manrope;margin:8px 0">${register?'Create your account':'Welcome back'}</h1><p class="subhead" style="margin-bottom:23px">${register?'Set up your merchant workspace.':'Make growth count. Start with your business.'}</p>${register?`<div class="field" style="margin-bottom:13px"><label>Business name</label><input name="name" placeholder="Your store name" required></div><div class="form-grid" style="margin-bottom:13px"><div class="field"><label>Business type</label><select name="category"><option>Kirana</option><option>Cafe</option><option>Pharmacy</option><option>Retail</option><option>Other</option></select></div><div class="field"><label>City</label><input name="city" placeholder="Hyderabad" required></div></div>`:''}<div class="field" style="margin-bottom:13px"><label>Email address</label><input name="email" type="email" value="${register?'':'demo@laabh.in'}" required></div><div class="field" style="margin-bottom:19px"><label>Password${register?' (8+ characters)':''}</label><input name="password" type="password" value="${register?'':'laabh123'}" minlength="${register?8:1}" required></div><button class="btn primary" style="width:100%;padding:12px">${register?'Create merchant account →':'Sign in to Laabh →'}</button>${!register?`<p class="notice-text" style="text-align:center;margin-top:16px">Demo account · demo@laabh.in / laabh123</p>`:''}<button type="button" id="toggleRegister" class="pill" style="display:block;margin:12px auto 0">${register?'Back to sign in':'Create a merchant account'}</button><div id="loginError" style="color:#bd563c;font-size:11px;margin-top:9px;text-align:center"></div></form></div>`;document.getElementById('toggleRegister').onclick=()=>renderLogin(!register);document.getElementById('loginForm').onsubmit=async e=>{e.preventDefault();let f=new FormData(e.target);try{await api(register?'/register':'/login',{method:'POST',body:JSON.stringify(Object.fromEntries(f))});boot()}catch(x){document.getElementById('loginError').textContent=x.message}}}
 async function boot(){try{let m=await api('/me');state.merchant=m.merchant;await loadBase();render()}catch(e){renderLogin()}}
