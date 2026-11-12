@@ -1,4 +1,6 @@
-# Laabh — Merchant Growth Platform
+# Laabh-Merchant-Growth-Platform
+
+## Laabh — Merchant Growth Platform
 
 A hackathon demo for profit-first growth decisions. The app includes three simulated merchants (kirana, café, pharmacy), seeded transaction history, dashboard analytics, recommendations, customer segments, inventory alerts, campaign simulation, holdout analytics, forecasts, a typed multilingual assistant, and a deterministic Profit Guard.
 
